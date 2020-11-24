@@ -1,16 +1,16 @@
 package com.example.recipe.domain;
 
-import lombok.Data;
 
-import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Entity
+
+
+@Getter
+@Setter
 public class UnitOfMeasure {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String uom;
 
 

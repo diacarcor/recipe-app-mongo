@@ -33,7 +33,7 @@ public class IngredientServiceImpl implements IngredientService{
 
 
     @Override
-    public IngredientCommand findByRecipeIdAndIngredientId(Long recipeId, Long ingredientId) {
+    public IngredientCommand findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 
         Recipe recipe = recipeService.findById(recipeId);
 
@@ -110,7 +110,7 @@ public class IngredientServiceImpl implements IngredientService{
     }
 
     @Override
-    public void deleteById(Long recipeId,Long id) {
+    public void deleteById(String recipeId,String id) {
         Recipe recipe = recipeService.findById(recipeId);
 
         if(recipe==null){

@@ -5,6 +5,7 @@ import com.example.recipe.domain.Recipe;
 import com.example.recipe.exceptions.NotFoundException;
 import com.example.recipe.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,9 +40,9 @@ public class RecipeControllerTest {
     @Test
     void getRecipes() throws Exception {
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
 
-        when(recipeService.findById(anyLong())).thenReturn(recipe);
+        when(recipeService.findById(anyString())).thenReturn(recipe);
 
         mockMvc.perform(get("/recipe/1/show"))
                 .andExpect(status().isOk())
@@ -52,7 +53,7 @@ public class RecipeControllerTest {
     @Test
     public void testGetRecipeNotFound() throws Exception {
 
-        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+        when(recipeService.findById(anyString())).thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/recipe/1/show"))
                 .andExpect(status().isNotFound())
@@ -73,7 +74,7 @@ public class RecipeControllerTest {
     @Test
     public void postNewRecipeForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
-        command.setId(2L);
+        command.setId("2");
 
         when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
@@ -90,7 +91,7 @@ public class RecipeControllerTest {
     @Test
     public void testPostNewRecipeFormValidationFail() throws Exception {
         RecipeCommand command = new RecipeCommand();
-        command.setId(2L);
+        command.setId("2");
 
         when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
@@ -107,8 +108,8 @@ public class RecipeControllerTest {
     @Test
     public void updateRecipe() throws Exception {
         RecipeCommand recipeCommand = new RecipeCommand();
-        recipeCommand.setId(1L);
-        when(recipeService.findCommandById(anyLong())).thenReturn(recipeCommand);
+        recipeCommand.setId("1");
+        when(recipeService.findCommandById(anyString())).thenReturn(recipeCommand);
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())
@@ -124,16 +125,7 @@ public class RecipeControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        verify(recipeService,times(1)).deleteById(anyLong());
-    }
-
-    @Test
-    public void testBadRequest() throws Exception {
-
-         mockMvc.perform(get("/recipe/abc/show"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("400error"))
-                .andExpect(model().attributeExists("exception"));
+        verify(recipeService,times(1)).deleteById(anyString());
     }
 
 

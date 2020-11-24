@@ -3,7 +3,7 @@ package com.example.recipe.converters;
 import com.example.recipe.commands.UnitOfMeasureCommand;
 import com.example.recipe.domain.UnitOfMeasure;
 import org.springframework.core.convert.converter.Converter;
-import com.sun.istack.Nullable;
+import org.springframework.lang.Nullable;
 import lombok.Synchronized;
 import org.springframework.stereotype.Component;
 

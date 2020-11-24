@@ -8,6 +8,7 @@ import com.example.recipe.exceptions.NotFoundException;
 import com.example.recipe.repositories.RecipeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -57,16 +58,16 @@ class RecipeServiceImpTest {
     void getRecipesById(){
 
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
 
         Optional<Recipe> optionalRecipe = Optional.of(recipe);
 
-        when(recipeRepository.findById(anyLong())).thenReturn(optionalRecipe);
+        when(recipeRepository.findById(anyString())).thenReturn(optionalRecipe);
 
-        Recipe returnedRecipe =  recipeService.findById(1L);
+        Recipe returnedRecipe =  recipeService.findById("1");
 
         assertNotNull(returnedRecipe,"Null recipe returned");
-        verify(recipeRepository,times(1)).findById(anyLong());
+        verify(recipeRepository,times(1)).findById(anyString());
         verify(recipeRepository,never()).findAll();
 
     }
@@ -75,19 +76,19 @@ class RecipeServiceImpTest {
     void getCommandById(){
 
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
 
         Optional<Recipe> optionalRecipe = Optional.of(recipe);
-        when(recipeRepository.findById(anyLong())).thenReturn(optionalRecipe);
+        when(recipeRepository.findById(anyString())).thenReturn(optionalRecipe);
 
         RecipeCommand recipeCommand = new RecipeCommand();
-        recipeCommand.setId(1L);
+        recipeCommand.setId("1");
 
         when(recipeToRecipeCommand.convert(any())).thenReturn(recipeCommand);
 
-        RecipeCommand returnedCommand  = recipeService.findCommandById(1L);
+        RecipeCommand returnedCommand  = recipeService.findCommandById("1");
         assertNotNull(returnedCommand,"No command returned");
-        verify(recipeRepository,times(1)).findById(anyLong());
+        verify(recipeRepository,times(1)).findById(anyString());
         verify(recipeRepository,never()).findAll();
         verify(recipeToRecipeCommand,times(1)).convert(any());
 
@@ -96,13 +97,13 @@ class RecipeServiceImpTest {
     @Test
     void  deleteById(){
         //given
-        Long idToDelete = 2L;
+        String idToDelete = "2";
 
         //when
         recipeService.deleteById(idToDelete);
 
         //then
-        verify(recipeRepository,times(1)).deleteById(anyLong());
+        verify(recipeRepository,times(1)).deleteById(anyString());
 
     }
 
@@ -110,20 +111,13 @@ class RecipeServiceImpTest {
     public void getRecipeByIdTestNotFound() throws Exception {
         Optional<Recipe> recipeOptional = Optional.empty();
 
-        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
 
-        Assertions.assertThrows(NotFoundException.class, () -> {recipeService.findById(1L);});
+        Assertions.assertThrows(NotFoundException.class, () -> {recipeService.findById("1");});
 
         //should go boom
     }
 
-    @Test
-    public void getRecipeByIdNumberFormatException() throws Exception{
-
-        Assertions.assertThrows(NumberFormatException.class,()->{
-            recipeService.findById(Long.valueOf("asd"));
-        });
-    }
 
 
 

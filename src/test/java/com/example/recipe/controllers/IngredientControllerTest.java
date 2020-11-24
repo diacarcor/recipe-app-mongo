@@ -50,14 +50,14 @@ public class IngredientControllerTest {
 
         RecipeCommand returnedRecipe = new RecipeCommand();
 
-        when(recipeService.findCommandById(anyLong())).thenReturn(returnedRecipe);
+        when(recipeService.findCommandById(anyString())).thenReturn(returnedRecipe);
 
         mockMvc.perform(get("/recipe/1/ingredients"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/list"))
                 .andExpect(model().attributeExists("recipe"));
 
-        verify(recipeService, times(1)).findCommandById(anyLong());
+        verify(recipeService, times(1)).findCommandById(anyString());
 
 
     }
@@ -66,14 +66,14 @@ public class IngredientControllerTest {
     public void showIngredient () throws Exception {
         IngredientCommand ingredientCommand = new IngredientCommand();
 
-        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(),anyLong())).thenReturn(ingredientCommand);
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(),anyString())).thenReturn(ingredientCommand);
 
         mockMvc.perform(get("/recipe/1/ingredient/1/show"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/show"))
                 .andExpect(model().attributeExists("ingredient"));
 
-        verify(ingredientService,times(1)).findByRecipeIdAndIngredientId(anyLong(),anyLong());
+        verify(ingredientService,times(1)).findByRecipeIdAndIngredientId(anyString(),anyString());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class IngredientControllerTest {
         IngredientCommand ingredientCommand = new IngredientCommand();
 
         //when
-        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(ingredientCommand);
         when(unitOfMeasureService.listAllUoms()).thenReturn(new HashSet<>());
 
         //then
@@ -96,8 +96,8 @@ public class IngredientControllerTest {
     @Test
     public void saveOrUpdateIngredient() throws Exception {
         IngredientCommand ingredientCommand = new IngredientCommand();
-        ingredientCommand.setId(1L);
-        ingredientCommand.setRecipeId(1L);
+        ingredientCommand.setId("1");
+        ingredientCommand.setRecipeId("1");
 
         when (ingredientService.saveIngredientCommand(any())).thenReturn(ingredientCommand);
 
@@ -136,6 +136,6 @@ public class IngredientControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/1/ingredients"));
 
-        verify(ingredientService,times(1)).deleteById(anyLong(),anyLong());
+        verify(ingredientService,times(1)).deleteById(anyString(),anyString());
     }
 }
