@@ -24,6 +24,7 @@ public class IngredientServiceImplTest {
 
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
+    private final UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand;
 
 
     @Mock
@@ -38,6 +39,7 @@ public class IngredientServiceImplTest {
     public IngredientServiceImplTest() {
         this.ingredientToIngredientCommand = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
         this.ingredientCommandToIngredient = new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure());
+        this.unitOfMeasureToUnitOfMeasureCommand = new UnitOfMeasureToUnitOfMeasureCommand();
     }
 
 
@@ -46,7 +48,7 @@ public class IngredientServiceImplTest {
 
        MockitoAnnotations.initMocks(this);
 
-       ingredientService = new IngredientServiceImpl(recipeService, ingredientToIngredientCommand, ingredientCommandToIngredient,unitOfMeasureRepository) ;
+       ingredientService = new IngredientServiceImpl(recipeService, ingredientToIngredientCommand, ingredientCommandToIngredient, unitOfMeasureToUnitOfMeasureCommand, unitOfMeasureRepository) ;
     }
 
     @Test
@@ -78,7 +80,6 @@ public class IngredientServiceImplTest {
 
         //then
         assertEquals("3", ingredientCommand.getId());
-        assertEquals("1", ingredientCommand.getRecipeId());
         verify(recipeService, times(1)).findById(anyString());
 
     }

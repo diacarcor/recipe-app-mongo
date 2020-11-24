@@ -1,14 +1,15 @@
 package com.example.recipe.services;
 
 import com.example.recipe.commands.IngredientCommand;
+import com.example.recipe.commands.UnitOfMeasureCommand;
 import com.example.recipe.converters.IngredientCommandToIngredient;
 import com.example.recipe.converters.IngredientToIngredientCommand;
+import com.example.recipe.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import com.example.recipe.domain.Ingredient;
 import com.example.recipe.domain.Recipe;
 import com.example.recipe.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,15 +20,17 @@ public class IngredientServiceImpl implements IngredientService{
     private final RecipeService recipeService;
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
+    private final UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
 
     public IngredientServiceImpl(RecipeService recipeService,
                                  IngredientToIngredientCommand ingredientToIngredientCommand,
                                  IngredientCommandToIngredient ingredientCommandToIngredient,
-                                 UnitOfMeasureRepository unitOfMeasureRepository) {
+                                 UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand, UnitOfMeasureRepository unitOfMeasureRepository) {
         this.recipeService = recipeService;
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
         this.ingredientCommandToIngredient = ingredientCommandToIngredient;
+        this.unitOfMeasureToUnitOfMeasureCommand = unitOfMeasureToUnitOfMeasureCommand;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
@@ -51,15 +54,19 @@ public class IngredientServiceImpl implements IngredientService{
             log.error("Ingredient id not found: " + ingredientId);
         }
 
+
         return ingredientCommandOptional.get();
     }
 
     @Override
-    @Transactional
     public IngredientCommand saveIngredientCommand(IngredientCommand command) {
 
         Recipe recipe = recipeService.findById(command.getRecipeId());
 
+        UnitOfMeasureCommand uom = unitOfMeasureToUnitOfMeasureCommand.convert(unitOfMeasureRepository.findById(command.getUom().getId()).get());
+
+        command.setUom(uom);
+        
         if(recipe==null){
 
             //todo toss error if not found!
@@ -82,7 +89,7 @@ public class IngredientServiceImpl implements IngredientService{
             } else {
                 //add new Ingredient
                 Ingredient ingredient = ingredientCommandToIngredient.convert(command);
-                ingredient.setRecipe(recipe);
+
                 recipe.addIngredient(ingredient);
             }
 
@@ -101,9 +108,7 @@ public class IngredientServiceImpl implements IngredientService{
                         .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
                         .findFirst();
             }
-            IngredientCommand savedIngredient = ingredientToIngredientCommand.convert(savedIngredientOptional.get());
-            //to do check for fail
-            return savedIngredient;
+            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
         }
 
 

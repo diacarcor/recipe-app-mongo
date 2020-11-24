@@ -64,6 +64,7 @@ public class RecipeServiceImpl implements RecipeService{
     @Transactional
     public RecipeCommand findCommandById(String id) {
         return recipeToRecipeCommand.convert(findById(id));
+
     }
 
     @Override
