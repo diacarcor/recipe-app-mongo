@@ -54,7 +54,10 @@ public class RecipeController {
 
         RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
 
-        return "redirect:/recipe/" + savedCommand.getId() + "/show";
+        if (savedCommand.getId() != ""){
+            return "redirect:/recipe/" + savedCommand.getId() + "/show";
+        }
+        return "index";
     }
 
     @GetMapping ("recipe/{id}/update")
