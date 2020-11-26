@@ -1,5 +1,6 @@
 package com.example.recipe.repositories;
 
+import com.example.recipe.bootstrap.RecipeBootstrap;
 import com.example.recipe.domain.UnitOfMeasure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -13,7 +14,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @DataMongoTest
 class UnitOfMeasureRepositoryIT {
@@ -21,8 +21,22 @@ class UnitOfMeasureRepositoryIT {
     @Autowired
     UnitOfMeasureRepository unitOfMeasureRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    RecipeRepository recipeRepository;
+
     @BeforeEach
     void setUp() {
+
+        unitOfMeasureRepository.deleteAll();
+        categoryRepository.deleteAll();
+        recipeRepository.deleteAll();
+
+        RecipeBootstrap recipeBootstrap = new RecipeBootstrap(categoryRepository, recipeRepository, unitOfMeasureRepository);
+
+        recipeBootstrap.onApplicationEvent(null);
     }
 
     @Test
